@@ -1,3 +1,13 @@
+import docTempl from '$lib/assets/typst/official-doc.typ?raw';
+import tuzhang from '$lib/assets/typst/tuzhang.typ?raw';
+import fontXiaoBiaoSong from '$lib/assets/fonts/FZXIAOBIAOSONG-B05.TTF?url';
+import fontSimFang from '$lib/assets/fonts/SIMFANG.TTF?url';
+import fontSimHei from '$lib/assets/fonts/SIMHEI.TTF?url';
+import fontSimKai from '$lib/assets/fonts/SIMKAI.TTF?url';
+import fontSTSong from '$lib/assets/fonts/STSONG.TTF?url';
+import fontJBMono from '$lib/assets/fonts/JetBrainsMono-VariableFont_wght.ttf?url';
+import fontNewCMMath from '$lib/assets/fonts/NewCMMath-Regular.otf?url';
+
 import rendererWasmUrl from '@myriaddreamin/typst-ts-renderer/pkg/typst_ts_renderer_bg.wasm?url';
 import compilerWasmUrl from '@myriaddreamin/typst-ts-web-compiler/pkg/typst_ts_web_compiler_bg.wasm?url';
 import { FetchPackageRegistry, MemoryAccessModel, $typst as typst } from '@myriaddreamin/typst.ts';
@@ -10,17 +20,9 @@ import type {
 import { getFontBlobUrl } from '$lib/utils';
 import { tintImage, tintSvg, recenterSvg } from '$lib/utils/image';
 import { dev } from '$app/environment';
-
-import docTempl from '$lib/assets/typst/official-doc.typ?raw';
-import tuzhang from '$lib/assets/typst/tuzhang.typ?raw';
-import fontXiaoBiaoSong from '$lib/assets/fonts/FZXIAOBIAOSONG-B05.TTF?url';
-import fontSimFang from '$lib/assets/fonts/SIMFANG.TTF?url';
-import fontSimHei from '$lib/assets/fonts/SIMHEI.TTF?url';
-import fontSimKai from '$lib/assets/fonts/SIMKAI.TTF?url';
-import fontSTSong from '$lib/assets/fonts/STSONG.TTF?url';
-import fontJBMono from '$lib/assets/fonts/JetBrainsMono-VariableFont_wght.ttf?url';
-import fontNewCMMath from '$lib/assets/fonts/NewCMMath-Regular.otf?url';
+import type { IssuerKey, Authority } from './types';
 import { ISSUERS } from './constants';
+import { m } from '$lib/paraglide/messages';
 
 const fonts: { name: string; url: string }[] = [
   { name: 'FZXIAOBIAOSONG-B05.TTF', url: fontXiaoBiaoSong },
@@ -34,8 +36,11 @@ const fonts: { name: string; url: string }[] = [
 
 let isInitialized = false;
 let initializationPromise: Promise<void> | null = null;
-type LoadingStatus = 'loading_fonts' | 'loading_wasm' | 'loading_templates' | '';
-export const loadingState: { status: LoadingStatus } = $state({ status: '' });
+export const loadingState: { status: 'loading_fonts' | 'loading_wasm' | 'loading_templates' | '' } =
+  $state({ status: '' });
+
+const logoScales: Record<string, number> = {};
+
 // let isFontsLoaded = false;
 // let fontsLoadPromise: Promise<{ fileName: string; url: string }[]> | null = null;
 // let cachedFonts: { fileName: string; url: string }[] = [];
@@ -166,7 +171,9 @@ export const initializeTypst = async () => {
       await Promise.all(
         ISSUERS.map(async (issuer) => {
           if (issuer.type === 'svg') {
-            const recentered = await recenterSvg(issuer.raw);
+            const { svg: recentered, scale } = await recenterSvg(issuer.raw);
+            console.log(issuer.key, scale);
+            logoScales[issuer.key] = scale;
             const redTinted = tintSvg(recentered, [220, 0, 0]);
             const blackTinted = tintSvg(issuer.raw, [0, 0, 0], 0.25);
             await Promise.all([
@@ -174,10 +181,12 @@ export const initializeTypst = async () => {
               typst.mapShadow(`/watermark-${issuer.key}.svg`, blackTinted)
             ]);
           } else {
-            const [redTinted, blackTinted] = await Promise.all([
+            const [{ image: redTinted, scale: scale }, { image: blackTinted }] = await Promise.all([
               tintImage(issuer.url, [210, 0, 0], 1, true),
               tintImage(issuer.url, [0, 0, 0], 0.25)
             ]);
+            console.log(issuer.key, scale);
+            logoScales[issuer.key] = scale;
             await Promise.all([
               typst.mapShadow(`/stamp-${issuer.key}.png`, redTinted),
               typst.mapShadow(`/watermark-${issuer.key}.png`, blackTinted)
@@ -206,6 +215,50 @@ export const waitForTypst = async () => {
   } else {
     await initializeTypst();
   }
+};
+
+export const getTypstDocument = ({
+  issuer,
+  authorities,
+  docTitle,
+  refNo,
+  issueDate: { year, month, day },
+  docContent
+}: {
+  issuer: IssuerKey;
+  authorities: Authority[];
+  docTitle: string;
+  refNo: string;
+  issueDate: { year: number; month: number; day: number };
+  docContent: string;
+}): string => {
+  const extOf = (key: string) =>
+    ISSUERS.find((i) => i.key === key)?.type === 'svg' ? 'svg' : 'png';
+  const authEntries = authorities
+    .filter((a) => a.name.trim() !== '')
+    .map(
+      (a) =>
+        `(name: "${m[`prefix_${a.faction}`]()}${a.name}", icon: image("stamp-${a.faction}.${extOf(a.faction)}", width: ${(logoScales[issuer] ?? 1) * 100}%))`
+    );
+  const watermarkExt = extOf(issuer);
+  return `
+#import "official-doc.typ": *
+
+#show: official-doc.with(
+  ref-no: "${refNo}",
+  conf-level: none,
+  conf-period: none,
+  urgen-level: none,
+  authorities: (${authEntries.join(', ')},),
+  watermark-icon: image("watermark-${issuer}.${watermarkExt}", width: ${(logoScales[issuer] ?? 1) * 100}%),
+  issuer: "${m[`issuer_${issuer}`]()}",
+  title: "${docTitle}",
+  issue-date: datetime(year: ${year}, month: ${month}, day: ${day}),
+  seed: ${Date.now()},
+)
+
+${docContent}
+`;
 };
 
 export default typst;

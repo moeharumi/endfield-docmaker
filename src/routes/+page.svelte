@@ -12,9 +12,10 @@
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Spinner } from '$lib/components/ui/spinner';
   import { Separator } from '$lib/components/ui/separator';
-  import { getTypstDocument, pick, triggerDownload, type Authority } from '$lib/utils';
+  import { pick, triggerDownload } from '$lib/utils';
+  import type { Authority } from '$lib/types';
   import { onMount } from 'svelte';
-  import typst, { loadingState, waitForTypst } from '$lib/typst.svelte';
+  import typst, { getTypstDocument, loadingState, waitForTypst } from '$lib/typst.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
   import { ISSUERS } from '$lib/constants';
   import PlusIcon from '@lucide/svelte/icons/plus';

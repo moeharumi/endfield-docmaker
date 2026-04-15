@@ -4,9 +4,7 @@ import logoUWST from '$lib/assets/logos/uwst.svg?raw';
 import logoTGCC from '$lib/assets/logos/tgcc.svg?raw';
 import logoHAS from '$lib/assets/logos/has.svg?raw';
 
-export type IssuerEntry<K extends string = string> =
-  | { key: K; type: 'png'; url: string }
-  | { key: K; type: 'svg'; raw: string };
+import type { IssuerEntry } from './types';
 
 export const ISSUERS = [
   { key: 'endfield_industries', type: 'png', url: logoEndfieldInds },
