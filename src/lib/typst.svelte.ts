@@ -133,6 +133,15 @@ export const initializeTypst = async () => {
   if (initializationPromise) {
     return initializationPromise;
   }
+  if (dev) {
+    const globalWithTypst = globalThis as typeof globalThis & {
+      typst?: typeof initializationPromise;
+    };
+    if (globalWithTypst.typst) {
+      initializationPromise = globalWithTypst.typst;
+      return initializationPromise;
+    }
+  }
 
   if (isInitialized) {
     return;
@@ -204,6 +213,11 @@ export const initializeTypst = async () => {
       throw e;
     }
   })();
+
+  if (dev) {
+    (globalThis as typeof globalThis & { typst?: typeof initializationPromise }).typst =
+      initializationPromise;
+  }
 
   return initializationPromise;
 };
