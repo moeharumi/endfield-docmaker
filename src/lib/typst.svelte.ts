@@ -8,7 +8,7 @@ import type {
   PackageSpec
 } from '@myriaddreamin/typst.ts/dist/esm/internal.types.mjs';
 import { getFontBlobUrl } from '$lib';
-import { tintImage, tintSvg, recenterSvg } from '$lib/tint';
+import { tintImage, tintSvg, recenterSvg } from '$lib/utils/image';
 import { dev } from '$app/environment';
 
 import docTempl from '$lib/assets/typst/official-doc.typ?raw';

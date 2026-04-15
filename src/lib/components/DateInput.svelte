@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cn } from '$lib/utils';
+  import { cn } from '$lib/utils/index.js';
 
   export type DateParts = { year: string; month: string; day: string };
 
