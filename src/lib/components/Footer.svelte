@@ -11,7 +11,7 @@
 
 <footer class="border-border/40 bg-muted/30 border-t">
   <div
-    class="mx-auto flex w-full max-w-7xl flex-col items-center gap-3 px-4 py-4 sm:flex-row sm:justify-between sm:px-6 lg:px-8"
+    class="mx-auto flex w-full max-w-400 flex-col items-center gap-3 px-4 py-4 sm:flex-row sm:justify-between sm:px-6 lg:px-8"
   >
     <div class="text-muted-foreground flex items-center gap-3 text-xs">
       <span class="font-mono">v{version}</span>
