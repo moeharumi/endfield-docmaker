@@ -240,7 +240,8 @@
       <CardContent class="flex flex-1 flex-col">
         <DynamicForm
           {template}
-          bind:values={() => getValues(), (v) => setValues(v)}
+          values={getValues()}
+          onchange={(v) => setValues(v)}
           disabled={!isReady}
         />
       </CardContent>

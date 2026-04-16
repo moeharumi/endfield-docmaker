@@ -11,13 +11,15 @@
 
   let {
     template,
-    values = $bindable<Record<string, unknown>>({}),
-    disabled = false
+    values = {},
+    disabled = false,
+    onchange
   }: {
     template: TemplateDefinition;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     values: Record<string, any>;
     disabled?: boolean;
+    onchange?: (values: Record<string, unknown>) => void;
   } = $props();
 
   const cols = $derived(template.gridCols ?? 3);
@@ -38,6 +40,10 @@
     }
   }
 
+  function update(key: string, val: unknown) {
+    onchange?.({ ...values, [key]: val });
+  }
+
   const gridColsClass = $derived(
     cols === 1 ? 'grid-cols-1' : cols === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-3'
   );
@@ -51,9 +57,7 @@
         <Label>{field.label()}</Label>
         <Input
           value={typeof values[field.key] === 'string' ? (values[field.key] as string) : ''}
-          oninput={(e) => {
-            values = { ...values, [field.key]: e.currentTarget.value };
-          }}
+          oninput={(e) => update(field.key, e.currentTarget.value)}
           placeholder={field.placeholder?.() ?? ''}
           {disabled}
         />
@@ -63,9 +67,7 @@
         <Label>{field.label()}</Label>
         <Textarea
           value={typeof values[field.key] === 'string' ? (values[field.key] as string) : ''}
-          oninput={(e) => {
-            values = { ...values, [field.key]: e.currentTarget.value };
-          }}
+          oninput={(e) => update(field.key, e.currentTarget.value)}
           placeholder={field.placeholder?.() ?? ''}
           class="field-sizing-fixed min-h-40 resize-none {field.grow ? 'flex-1' : ''}"
           {disabled}
@@ -77,9 +79,7 @@
         <Select
           type="single"
           value={typeof values[field.key] === 'string' ? (values[field.key] as string) : undefined}
-          onValueChange={(v) => {
-            values = { ...values, [field.key]: v };
-          }}
+          onValueChange={(v) => update(field.key, v)}
           {disabled}
         >
           <SelectTrigger class="w-full">
@@ -106,7 +106,7 @@
           value={values[field.key] != null ? String(values[field.key]) : ''}
           oninput={(e) => {
             const v = e.currentTarget.value;
-            values = { ...values, [field.key]: v === '' ? '' : v };
+            update(field.key, v === '' ? '' : v);
           }}
           min={field.min}
           max={field.max}
@@ -116,13 +116,7 @@
       </div>
     {:else if field.type === 'toggle'}
       <div class="flex items-center gap-3 {span}">
-        <Switch
-          checked={!!values[field.key]}
-          onchange={(v) => {
-            values = { ...values, [field.key]: v };
-          }}
-          {disabled}
-        />
+        <Switch checked={!!values[field.key]} onchange={(v) => update(field.key, v)} {disabled} />
         <div class="flex flex-col">
           <Label class="cursor-pointer">{field.label()}</Label>
           {#if field.description}
@@ -135,9 +129,7 @@
         <Label>{field.label()}</Label>
         <DateInput
           value={values[field.key] ?? { year: '', month: '', day: '' }}
-          onchange={(v) => {
-            values = { ...values, [field.key]: v };
-          }}
+          onchange={(v) => update(field.key, v)}
           class="w-full"
           {disabled}
         />
@@ -146,9 +138,7 @@
       <div class={span}>
         <AuthoritiesList
           value={values[field.key] ?? []}
-          onchange={(v) => {
-            values = { ...values, [field.key]: v };
-          }}
+          onchange={(v) => update(field.key, v)}
           maxItems={field.maxItems ?? 9}
           {disabled}
         />
@@ -157,9 +147,7 @@
       <div class={span}>
         <KvGrid
           value={values[field.key] ?? []}
-          onchange={(v) => {
-            values = { ...values, [field.key]: v };
-          }}
+          onchange={(v) => update(field.key, v)}
           label={field.label()}
           {disabled}
         />
@@ -173,9 +161,7 @@
             value={typeof values[field.prefixKey] === 'string'
               ? (values[field.prefixKey] as string)
               : undefined}
-            onValueChange={(v) => {
-              values = { ...values, [field.prefixKey]: v };
-            }}
+            onValueChange={(v) => update(field.prefixKey, v)}
             {disabled}
           >
             <SelectTrigger class="w-auto shrink-0 rounded-r-none border-r-0">
@@ -189,9 +175,7 @@
           </Select>
           <Input
             value={typeof values[field.key] === 'string' ? (values[field.key] as string) : ''}
-            oninput={(e) => {
-              values = { ...values, [field.key]: e.currentTarget.value };
-            }}
+            oninput={(e) => update(field.key, e.currentTarget.value)}
             placeholder={field.placeholder?.() ?? ''}
             class="rounded-l-none"
             {disabled}
