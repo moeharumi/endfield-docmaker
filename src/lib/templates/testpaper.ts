@@ -174,7 +174,7 @@ export const testpaperTemplate: TemplateDefinition = {
       `  par-justify: ${v.parJustify ? 'true' : 'false'},`,
       ')',
       '',
-      `#set page(background: place(center + horizon, rotate(24deg, opacity(4%, image("watermark-${v.issuer}.${watermarkExt}", width: ${watermarkScale} * 300%)))))`,
+      `#set page(background: place(center + horizon, block(width: 20%, image("watermark-${v.issuer}.${watermarkExt}", width: ${watermarkScale} * 100%))))`,
       '',
       `#chapter[${escapeTypst(fullTitle)}]`,
       `#title[${escapeTypst(fullTitle)}]`,
