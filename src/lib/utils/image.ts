@@ -59,53 +59,75 @@ const computeCentroid = (
   const cx = sumX / totalWeight;
   const cy = sumY / totalWeight;
 
-  // 3. PASS 2: Calculate Spatial Variance (RMS Radius) and Maximum Extents
-  let sumSqDist = 0;
-  let maxDistSq = 0;
-  offset = 0;
+  const maxDist = Math.ceil(
+    Math.max(
+      Math.sqrt(cx * cx + cy * cy),
+      Math.sqrt((width - cx) ** 2 + cy * cy),
+      Math.sqrt(cx * cx + (height - cy) ** 2),
+      Math.sqrt((width - cx) ** 2 + (height - cy) ** 2)
+    )
+  );
 
+  const distanceBins = new Float64Array(maxDist + 1);
+
+  // 3. PASS 2: Distance Histogram
+  offset = 0;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const weight = getWeight(offset);
-      if (weight > 127.5) {
+      if (weight > 0) {
         const dx = x - cx;
         const dy = y - cy;
-        const distSq = dx * dx + dy * dy;
-
-        // Weight the squared distance by the ink's opacity
-        sumSqDist += weight * distSq;
-
-        // Track the absolute furthest significant pixel for boundary safety
-        if (distSq > maxDistSq) {
-          maxDistSq = distSq;
-        }
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        distanceBins[Math.ceil(dist)] += weight;
       }
       offset += 4;
     }
   }
 
-  // The true measure of the "visual footprint" of the ink
-  const rmsRadius = Math.sqrt(sumSqDist / totalWeight);
-  // The absolute furthest point the logo reaches
-  const maxRadius = Math.sqrt(maxDistSq);
+  // 4. Find the effective boundary of the logo (99.5th percentile to ignore noise)
+  let cumulativeWeight = 0;
+  const targetMaxWeight = totalWeight * 0.995;
+  let rMax = 1;
 
-  // 4. Calculate Scale
-  const canvasMinSide = Math.min(width, height);
+  for (let r = 0; r < distanceBins.length; r++) {
+    cumulativeWeight += distanceBins[r];
+    if (cumulativeWeight >= targetMaxWeight) {
+      rMax = r;
+      break;
+    }
+  }
 
-  const targetRmsRatio = 2;
-  const idealScale = (canvasMinSide * targetRmsRatio) / (rmsRadius || 1);
+  // ====================================================================
+  // 5. CORE VS PERIPHERY CALCULATION
+  // ====================================================================
 
-  // CRITICAL SAFETY BOUNDARY
-  const maxAllowedRadiusRatio = 0.68;
-  const safeScale = (canvasMinSide * maxAllowedRadiusRatio) / (maxRadius || 1);
+  // Define what counts as the "core" circle (e.g., the inner 55% of the radius)
+  const coreFraction = 0.7;
+  const rCore = rMax * coreFraction;
 
-  // Use the visually ideal scale, unless it causes clipping, in which case clamp it.
-  const scale = Math.min(idealScale, safeScale);
+  let outerWeight = 0;
+  for (let r = 0; r <= rMax; r++) {
+    if (r > rCore) {
+      outerWeight += distanceBins[r];
+    }
+  }
+
+  // The ratio of ink outside the core vs total ink
+  const outerWeightRatio = outerWeight / targetMaxWeight;
+
+  // Penalty Factor: How aggressively to shrink logos with heavy outer edges.
+  const penaltyFactor = 0.9;
+  const scaleMultiplier = 1.0 - outerWeightRatio * penaltyFactor;
+
+  const maxSafeRadius = Math.min(width, height) * 0.7;
+  const baseScale = rMax > 0 ? maxSafeRadius / rMax : 1;
+  const scale = Math.max(0.85, baseScale * scaleMultiplier);
 
   console.log(
     `Centroid: (${cx.toFixed(1)}, ${cy.toFixed(1)}) | ` +
-      `RMS: ${rmsRadius.toFixed(1)}px | MaxR: ${maxRadius.toFixed(1)}px | ` +
-      `Ideal Scale: ${idealScale.toFixed(2)} | Final Scale: ${scale.toFixed(2)}`
+      `Max Radius: ${rMax}px | Outer Ink Ratio: ${(outerWeightRatio * 100).toFixed(1)}% | ` +
+      `Scale Multiplier: ${scaleMultiplier.toFixed(2)}`
   );
 
   return { x: cx, y: cy, scale, totalWeight };
