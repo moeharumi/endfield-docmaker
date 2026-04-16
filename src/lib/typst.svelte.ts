@@ -6,7 +6,7 @@ import fontSimHei from '$lib/assets/fonts/SIMHEI.TTF?url';
 import fontSimKai from '$lib/assets/fonts/SIMKAI.TTF?url';
 import fontTimesNewRoman from '$lib/assets/fonts/times.ttf?url';
 import fontNotoSans from '$lib/assets/fonts/NotoSansCJKsc-Regular.otf?url';
-import fontNotoSerif from '$lib/assets/fonts/NotoSerifCJK-Regular.ttc?url';
+import fontNotoSerif from '$lib/assets/fonts/NotoSerifCJKsc-Regular.otf?url';
 import fontSTIXTwoMath from '$lib/assets/fonts/STIXTwoMath-Regular.otf?url';
 import fontTeXGyreTermes from '$lib/assets/fonts/texgyretermes-math.otf?url';
 import fontJBMono from '$lib/assets/fonts/JetBrainsMono-VariableFont_wght.ttf?url';
@@ -33,7 +33,7 @@ const fonts: { name: string; url: string }[] = [
   { name: 'SIMKAI.TTF', url: fontSimKai },
   { name: 'times.ttf', url: fontTimesNewRoman },
   { name: 'NotoSansCJKsc-Regular.otf', url: fontNotoSans },
-  { name: 'NotoSerifCJK-Regular.ttc', url: fontNotoSerif },
+  { name: 'NotoSerifCJKsc-Regular.otf', url: fontNotoSerif },
   { name: 'STIXTwoMath-Regular.otf', url: fontSTIXTwoMath },
   { name: 'texgyretermes-math.otf', url: fontTeXGyreTermes },
   { name: 'JetBrainsMono-VariableFont_wght.ttf', url: fontJBMono }
