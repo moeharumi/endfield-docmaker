@@ -36,49 +36,6 @@ export function openDB(): Promise<IDBDatabase> {
   return dbPromise;
 }
 
-/** Migrate from the old single-store DB (`endfield-docmaker-files`). */
-export async function migrateOldDB(): Promise<void> {
-  return new Promise((resolve) => {
-    const req = indexedDB.open('endfield-docmaker-files', 1);
-    req.onsuccess = () => {
-      const oldDb = req.result;
-      if (!oldDb.objectStoreNames.contains('files')) {
-        oldDb.close();
-        resolve();
-        return;
-      }
-      const tx = oldDb.transaction('files', 'readonly');
-      const getAll = tx.objectStore('files').getAll();
-      getAll.onsuccess = async () => {
-        const records = getAll.result;
-        oldDb.close();
-        if (records.length > 0) {
-          const db = await openDB();
-          const writeTx = db.transaction(FILES_STORE, 'readwrite');
-          const store = writeTx.objectStore(FILES_STORE);
-          for (const rec of records) {
-            store.put(rec);
-          }
-        }
-        // Delete old DB
-        indexedDB.deleteDatabase('endfield-docmaker-files');
-        resolve();
-      };
-      getAll.onerror = () => {
-        oldDb.close();
-        resolve();
-      };
-    };
-    req.onerror = () => resolve();
-    req.onupgradeneeded = () => {
-      // Old DB doesn't exist, nothing to migrate
-      req.result.close();
-      indexedDB.deleteDatabase('endfield-docmaker-files');
-      resolve();
-    };
-  });
-}
-
 /** Clear all data from both IndexedDB stores. */
 export async function clearAllStores(): Promise<void> {
   const db = await openDB();

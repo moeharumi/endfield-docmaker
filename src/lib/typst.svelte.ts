@@ -25,7 +25,6 @@ import { dev } from '$app/environment';
 import { base } from '$app/paths';
 import { ISSUERS, setLogoScales } from './constants';
 import { gzipSync } from 'fflate';
-import { migrateOldDB } from '$lib/stores/db';
 import { loadFontsWithCache } from '$lib/stores/fonts';
 
 export const DEFAULT_FONTS: { name: string; url: string }[] = [
@@ -166,9 +165,6 @@ export const initializeTypst = async () => {
 
   initializationPromise = (async () => {
     try {
-      // Migrate from old DB if needed
-      await migrateOldDB();
-
       // Prepare fonts (with IndexedDB caching)
       loadingState.status = 'loading_fonts';
       const fontsVersion: string = __FONTS_VERSION__;
@@ -179,7 +175,7 @@ export const initializeTypst = async () => {
       const allCached = await getAllFonts();
       const customFonts = allCached.filter((f) => f.custom);
       const customBlobUrls = customFonts.map((f) => {
-        const blob = new Blob([f.data], { type: 'font/woff2' });
+        const blob = new Blob([new Uint8Array(f.data)], { type: 'font/woff2' });
         return URL.createObjectURL(blob);
       });
 

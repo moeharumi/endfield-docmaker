@@ -70,27 +70,6 @@
         }
       }
 
-      // Migrate from legacy storage (version 3 official-doc)
-      const legacyRaw = localStorage.getItem('endfield-doc');
-      if (legacyRaw && !localStorage.getItem(storageKey('official-doc'))) {
-        const legacy = JSON.parse(legacyRaw);
-        if (legacy.version === 3) {
-          const migrated = {
-            issuer: legacy.issuer,
-            authorities: legacy.authorities,
-            refNo: legacy.refNo,
-            docTitle: legacy.docTitle,
-            issueDate: legacy.issueDate,
-            docContent: legacy.docContent
-          };
-          localStorage.setItem(
-            storageKey('official-doc'),
-            JSON.stringify({ version: 3, values: migrated })
-          );
-          localStorage.removeItem('endfield-doc');
-        }
-      }
-
       // Load all template data
       for (const tpl of TEMPLATES) {
         const raw = localStorage.getItem(storageKey(tpl.id));
