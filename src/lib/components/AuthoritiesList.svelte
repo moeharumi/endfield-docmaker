@@ -1,6 +1,7 @@
 <script lang="ts">
   import { m } from '$lib/paraglide/messages';
   import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
   import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
   import Button from '$lib/components/ui/button/button.svelte';
   import DraggableList from '$lib/components/DraggableList.svelte';
@@ -50,12 +51,12 @@
 
 <div class="space-y-3">
   <div class="flex items-center justify-between">
-    <span class="text-sm font-medium">{m.authorities()}</span>
+    <Label>{m.authorities()}</Label>
     {#if value.length < maxItems}
       <Button
         variant="outline"
-        size="sm"
-        class="h-7 cursor-pointer text-xs"
+        size="xs"
+        class="cursor-pointer text-xs"
         onclick={() => {
           value = [
             ...value,
@@ -68,7 +69,7 @@
         }}
         {disabled}
       >
-        <PlusIcon class="size-4" />
+        <PlusIcon class="size-3" />
         {m.add_authority()}
       </Button>
     {/if}

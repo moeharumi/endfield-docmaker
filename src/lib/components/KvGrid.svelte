@@ -1,6 +1,7 @@
 <script lang="ts">
   import { m } from '$lib/paraglide/messages';
   import { Input } from '$lib/components/ui/input';
+  import { Label } from '$lib/components/ui/label';
   import Button from '$lib/components/ui/button/button.svelte';
   import DraggableList from '$lib/components/DraggableList.svelte';
   import PlusIcon from '@lucide/svelte/icons/plus';
@@ -43,16 +44,16 @@
 <div class="space-y-3">
   <div class="flex items-center justify-between">
     {#if label}
-      <span class="text-sm font-medium">{label}</span>
+      <Label>{label}</Label>
     {/if}
     <Button
       variant="outline"
-      size="sm"
-      class="h-7 cursor-pointer text-xs"
+      size="xs"
+      class="cursor-pointer text-xs"
       onclick={addEntry}
       {disabled}
     >
-      <PlusIcon class="size-4" />
+      <PlusIcon class="size-3" />
       {m.kv_add()}
     </Button>
   </div>

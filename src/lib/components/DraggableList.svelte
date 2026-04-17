@@ -50,7 +50,7 @@
 <div onfocusin={() => (inputFocused = true)} onfocusout={() => (inputFocused = false)}>
   {#each items as item, i (i)}
     <div
-      class="flex items-center gap-2 rounded-md transition-colors {dragOverIndex === i &&
+      class="flex items-center gap-2 transition-colors {dragOverIndex === i &&
       dragIndex !== null &&
       dragIndex !== i
         ? 'bg-muted/60'

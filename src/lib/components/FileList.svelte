@@ -118,12 +118,12 @@
     {/if}
     <Button
       variant="outline"
-      size="sm"
-      class="h-7 cursor-pointer text-xs"
+      size="xs"
+      class="cursor-pointer text-xs"
       onclick={handleAdd}
       {disabled}
     >
-      <PlusIcon class="size-4" />
+      <PlusIcon class="size-3" />
       {m.file_add()}
     </Button>
   </div>
@@ -131,7 +131,7 @@
     <div class="space-y-1">
       {#each files as file, i (file.id)}
         <div
-          class="bg-muted/40 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
+          class="bg-muted/40 hover:bg-muted/60 flex items-center gap-2 px-2 py-1.5 text-sm transition-colors"
         >
           <FileIcon class="text-muted-foreground size-4 shrink-0" />
           {#if editingIndex === i}

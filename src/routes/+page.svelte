@@ -317,7 +317,7 @@
             <p class="text-destructive text-sm font-medium">{m.compile_error()}</p>
             <p class="text-muted-foreground text-xs">{m.compile_error_desc()}</p>
             <pre
-              class="bg-muted text-destructive/80 rounded-sm p-3 font-mono text-xs text-wrap">{compileError}</pre>
+              class="bg-muted text-destructive/80 p-3 font-mono text-xs text-wrap">{compileError}</pre>
           </div>
         {:else if pdf}
           <object
