@@ -83,15 +83,18 @@ export async function renameFile(
         resolve(null);
         return;
       }
-      store.delete(fileId(templateId, oldName));
-      const updated: StoredFile = {
-        ...existing,
-        id: fileId(templateId, newName),
-        name: newName
+      const delReq = store.delete(fileId(templateId, oldName));
+      delReq.onsuccess = () => {
+        const updated: StoredFile = {
+          ...existing,
+          id: fileId(templateId, newName),
+          name: newName
+        };
+        const putReq = store.put(updated);
+        putReq.onsuccess = () => resolve(updated);
+        putReq.onerror = () => reject(putReq.error);
       };
-      const putReq = store.put(updated);
-      putReq.onsuccess = () => resolve(updated);
-      putReq.onerror = () => reject(putReq.error);
+      delReq.onerror = () => reject(delReq.error);
     };
     getReq.onerror = () => reject(getReq.error);
   });
