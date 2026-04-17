@@ -125,6 +125,11 @@
     window.close();
   }
 
+  /** Reload the current page. */
+  function refreshPage() {
+    window.location.reload();
+  }
+
   function formatSize(bytes: number): string {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -139,9 +144,16 @@
       <div class="flex flex-col items-center gap-4 py-6">
         <CheckCircleIcon class="text-primary size-12" />
         <p class="text-sm">{m.settings_data_cleared()}</p>
-        <Button variant="outline" size="sm" class="cursor-pointer text-xs" onclick={closePage}>
-          {m.settings_close_page()}
-        </Button>
+        <div class="flex items-center gap-2">
+          <Button variant="outline" size="sm" class="cursor-pointer text-xs" onclick={refreshPage}>
+            <ArrowClockwiseIcon class="size-3.5" />
+            {m.settings_refresh_page()}
+          </Button>
+          <Button variant="outline" size="sm" class="cursor-pointer text-xs" onclick={closePage}>
+            <XIcon class="size-3.5" />
+            {m.settings_close_page()}
+          </Button>
+        </div>
       </div>
     {:else}
       <Dialog.Header>
