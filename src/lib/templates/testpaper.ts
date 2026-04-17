@@ -131,7 +131,7 @@ export const testpaperTemplate: TemplateDefinition = {
   defaults: () => ({
     issuer: ISSUERS[0].key as string,
     year: '152',
-    title: '全文明环带普通高等学校招生统一考试',
+    title: '塔卫二全文明环带普通高等学校招生统一考试',
     subject: '数学',
     examType: 'A',
     examDuration: '120分钟',
