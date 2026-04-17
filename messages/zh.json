@@ -1,7 +1,7 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "add_authority": "添加",
-  "app_name": "终末地公文生成器",
+  "app_name": "终末地文档生成器",
   "authorities": "签发机构",
   "compile_error": "编译错误",
   "compile_error_desc": "生成文档时发生错误：",
