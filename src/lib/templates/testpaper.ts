@@ -47,14 +47,6 @@ export const testpaperTemplate: TemplateDefinition = {
       colspan: 1
     },
     {
-      type: 'number',
-      key: 'year',
-      label: () => m.testpaper_year(),
-      min: 1,
-      placeholder: '152',
-      colspan: 1
-    },
-    {
       type: 'select',
       key: 'paperSize',
       label: () => m.testpaper_paper_size(),
@@ -62,6 +54,14 @@ export const testpaperTemplate: TemplateDefinition = {
         { value: 'a3', label: () => 'A3' },
         { value: 'a4', label: () => 'A4' }
       ],
+      colspan: 1
+    },
+    {
+      type: 'number',
+      key: 'year',
+      label: () => m.testpaper_year(),
+      min: 1,
+      placeholder: '152',
       colspan: 1
     },
     {
@@ -73,23 +73,23 @@ export const testpaperTemplate: TemplateDefinition = {
     },
     {
       type: 'text',
-      key: 'examDuration',
-      label: () => m.testpaper_exam_duration(),
-      placeholder: () => '120分钟',
-      colspan: 1
-    },
-    {
-      type: 'text',
       key: 'title',
       label: () => m.testpaper_title(),
       placeholder: () => m.testpaper_title_placeholder(),
-      colspan: 3
+      colspan: 2
     },
     {
       type: 'text',
       key: 'subject',
       label: () => m.testpaper_subject(),
       placeholder: () => m.testpaper_subject_placeholder(),
+      colspan: 1
+    },
+    {
+      type: 'text',
+      key: 'examDuration',
+      label: () => m.testpaper_exam_duration(),
+      placeholder: () => '120分钟',
       colspan: 1
     },
     {
@@ -142,7 +142,7 @@ export const testpaperTemplate: TemplateDefinition = {
   defaults: () => ({
     issuer: ISSUERS[0].key as string,
     year: '152',
-    title: '塔卫二全文明环带普通高等学校招生统一考试',
+    title: '全文明环带普通高等学校招生统一考试',
     subject: '数学',
     paperSize: 'a3',
     examType: 'A',
