@@ -139,7 +139,7 @@ export const testpaperTemplate: TemplateDefinition = {
   [答题前，请务必将自已的姓名、准考证号用0.5毫米黑色墨水的签字笔填写在试卷及答题卡的规定位置。],
   [请认真核对监考员在答题卡上所粘贴的条形码上的姓名、准考证号与本人是否相符。],
   [作答选择题必须用2B铅笔将答题卡上对应选项的方框涂满、涂黑；如需改动，请用橡皮擦干净后，再选涂其他答案。作答非选择题，必须用0.5毫米黑色墨水的签字笔在答题卡上的指定位置作答，在其他位置作答一律无效。],
-  [本试卷共4页，满分#total-pts 分，考试时间为#exam-duration。考试结束后，请将本试卷和答题卡一并交回。],
+  [本试卷共4页，满分#total-pts 分，考试时间为120分钟。考试结束后，请将本试卷和答题卡一并交回。],
 )
 
 #set-default-pts(5)
@@ -173,7 +173,7 @@ export const testpaperTemplate: TemplateDefinition = {
 #question[
   已知视风速是真风速和船风速的和向量，船风速与船行驶速度大小相等，方向相反.则真风速等级是 #paren[A]
   #text-figure(
-    figure: [图片施工中...],
+    figure: image("6.png", height: 1.5in),
     figure-x: -1in,
   )[#choices(
     columns: 1,
@@ -263,7 +263,7 @@ export const testpaperTemplate: TemplateDefinition = {
   + 证明：平面 $P A B perp "平面" P A D$
   + 若 $P A = A B = sqrt(2), A D = sqrt(3) + 1, B C = 2$，$P, B, C, D$ 在同一个球面上，设该球面的球心为 $O$.
     #text-figure(
-      figure: [图片施工中...],
+      figure: image("17.png", height: 1.6in),
     )[
       + 证明：$O$ 在平面 $A B C D$上；
       + 求直线 $A C$ 与直线 $P O$ 所成角的余弦值.
