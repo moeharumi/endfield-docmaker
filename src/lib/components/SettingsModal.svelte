@@ -125,7 +125,7 @@
 </script>
 
 <Dialog.Root bind:open>
-  <Dialog.Content class="sm:max-w-lg">
+  <Dialog.Content class="sm:max-w-xl">
     <Dialog.Header>
       <Dialog.Title>{m.settings()}</Dialog.Title>
     </Dialog.Header>
@@ -138,7 +138,7 @@
     </Tabs.Root>
 
     {#if activeTab === 'fonts'}
-      <div class="flex max-h-80 flex-col gap-3 overflow-y-auto">
+      <div class="flex max-h-[min(32rem,50vh)] flex-col gap-3 overflow-y-auto">
         <!-- Global actions -->
         <div class="flex items-center gap-2">
           <Button
@@ -237,45 +237,44 @@
 
         <Separator />
 
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              class="cursor-pointer text-xs"
+              href="https://github.com/Naptie/endfield-docmaker"
+              target="_blank"
+            >
+              <GithubIcon class="size-4" />
+              GitHub
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              class="cursor-pointer text-xs"
+              href="https://github.com/Naptie/endfield-docmaker/issues/new"
+              target="_blank"
+            >
+              <BugIcon class="size-4" />
+              {m.settings_report_bug()}
+            </Button>
+          </div>
           <Button
             variant="outline"
-            size="xs"
-            class="cursor-pointer text-xs"
-            href="https://github.com/Naptie/endfield-docmaker"
-            target="_blank"
+            size="sm"
+            class="text-destructive hover:bg-destructive hover:text-destructive-foreground w-fit cursor-pointer text-xs"
+            onclick={clearAllData}
+            disabled={isClearing}
           >
-            <GithubIcon class="size-3" />
-            GitHub
-          </Button>
-          <Button
-            variant="outline"
-            size="xs"
-            class="cursor-pointer text-xs"
-            href="https://github.com/Naptie/endfield-docmaker/issues/new"
-            target="_blank"
-          >
-            <BugIcon class="size-3" />
-            {m.settings_report_bug()}
+            {#if isClearing}
+              <Spinner class="size-4" />
+            {:else}
+              <TrashIcon class="size-4" />
+            {/if}
+            {m.settings_clear_data()}
           </Button>
         </div>
-
-        <Separator />
-
-        <Button
-          variant="outline"
-          size="xs"
-          class="text-destructive hover:bg-destructive hover:text-destructive-foreground w-fit cursor-pointer text-xs"
-          onclick={clearAllData}
-          disabled={isClearing}
-        >
-          {#if isClearing}
-            <Spinner class="size-3" />
-          {:else}
-            <TrashIcon class="size-3" />
-          {/if}
-          {m.settings_clear_data()}
-        </Button>
       </div>
     {/if}
   </Dialog.Content>
