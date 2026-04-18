@@ -218,7 +218,7 @@
           >
             <Tabs.List variant="line">
               {#each TEMPLATES as tpl (tpl.id)}
-                <Tabs.Trigger value={tpl.id}>{tpl.name()}</Tabs.Trigger>
+                <Tabs.Trigger value={tpl.id} class="cursor-pointer">{tpl.name()}</Tabs.Trigger>
               {/each}
             </Tabs.List>
           </Tabs.Root>
