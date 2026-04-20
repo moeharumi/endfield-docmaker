@@ -10,7 +10,7 @@
   import * as Tabs from '$lib/components/ui/tabs';
   import { pick, triggerDownload } from '$lib/utils';
   import { onMount } from 'svelte';
-  import typst, { loadingState, waitForTypst } from '$lib/typst.svelte';
+  import typst, { loadingState, packageLoadingState, waitForTypst } from '$lib/typst.svelte';
   import Button from '$lib/components/ui/button/button.svelte';
   import DynamicForm from '$lib/components/DynamicForm.svelte';
   import CompileError from '$lib/components/CompileError.svelte';
@@ -102,6 +102,7 @@
       const source = template.generateTypstSource(getValues());
       await typst.addSource('/main.typ', source);
       const data = await typst.pdf();
+      packageLoadingState.name = null;
       if (!data) return;
       const blob = new Blob([new Uint8Array(data)], { type: 'application/pdf' });
       pdfBlob = blob;
@@ -309,7 +310,11 @@
         {:else}
           <div class="flex flex-col items-center justify-center gap-2 p-6">
             <Spinner class="size-10" />
-            {#if loadingState.status}
+            {#if packageLoadingState.name}
+              <p class="text-muted-foreground text-sm">
+                {m.loading_package({ name: packageLoadingState.name })}
+              </p>
+            {:else if loadingState.status}
               <p class="text-muted-foreground text-sm">{m[loadingState.status]()}</p>
             {/if}
           </div>

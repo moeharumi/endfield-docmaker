@@ -27,6 +27,7 @@
   "kv_value_placeholder": "Value",
   "language": "Language",
   "loading_fonts": "Loading fonts...",
+  "loading_package": "Downloading package: {name}...",
   "loading_templates": "Loading templates...",
   "loading_wasm": "Loading Typst compiler...",
   "locale_en": "English",

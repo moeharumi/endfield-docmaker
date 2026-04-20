@@ -27,6 +27,7 @@
   "kv_value_placeholder": "值",
   "language": "语言",
   "loading_fonts": "正在加载字体...",
+  "loading_package": "正在下载包：{name}...",
   "loading_templates": "正在加载模板...",
   "loading_wasm": "正在加载 Typst 编译器...",
   "locale_en": "English",
